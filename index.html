@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Horner</title>
+</head>
+
+<body>
+    <form id="form" action="" method="get">
+        <input type="text" name="deg" id="deg" placeholder="deg">
+        <input type="submit" value="Submit">
+    </form>
+</body>
+
+<script>
+    function polynomial(coefficients) {
+        // Turn the python script into javascript
+        let result = "";
+        for (let i = 0; i < coefficients.length; i++) {
+            let power = coefficients.length - i - 1;
+            if (coefficients[i] > 0) {
+                result += "+";
+            }
+            if (power != 1 && power != 0) {
+                if (coefficients[i] == 1) {
+                    result += `x^${power}`;
+                } else if (coefficients[i] == 0) {
+                    continue;
+                } else {
+                    result += `${coefficients[i]}x^${power}`;
+                }
+            } else if (power == 1) {
+                if (coefficients[i] == 1) {
+                    result += `x`;
+                } else if (coefficients[i] == 0) {
+                    continue;
+                } else {
+                    result += `${coefficients[i]}x`;
+                }
+            } else if (power == 0) {
+                if (coefficients[i] == 0) {
+                    continue;
+                } else {
+                    result += `${coefficients[i]}`;
+                }
+            }
+        }
+        if (result[0] == "+") {
+            result = result.slice(1);
+        }
+        return result;
+    }
+    function divisors(number) {
+        let result = [];
+        for (let i = 1; i <= number; i++) {
+            if (number % i == 0) {
+                result.push(i);
+            }
+        }
+        return result;
+    }
+    function simplify_fraction(numerator, denominator) {
+        let divisors_numerator = divisors(numerator);
+        let divisors_denominator = divisors(denominator);
+        let common_divisors = [];
+        for (let i = 0; i < divisors_numerator.length; i++) {
+            for (let j = 0; j < divisors_denominator.length; j++) {
+                if (divisors_numerator[i] == divisors_denominator[j]) {
+                    common_divisors.push(divisors_numerator[i]);
+                }
+            }
+        }
+        let greatest_common_divisor = Math.max(...common_divisors);
+        return [numerator / greatest_common_divisor, denominator / greatest_common_divisor];
+    }
+    form.addEventListener("submit", function (event) {
+        // Prevent the form from submitting
+        event.preventDefault();
+        // Get the value of the input with the id of deg
+        let deg = document.getElementById("deg").value;
+        // Add a total of deg + 1 inputs to the form
+        for (let i = deg; i >= 0; i--) {
+            let input = document.createElement("input");
+            input.setAttribute("type", "text");
+            input.setAttribute("name", `coefficients[${i}]`);
+            input.setAttribute("placeholder", `coefficients[${i}]`);
+            input.setAttribute("id", `coefficients[${i}]`);
+            form.appendChild(document.createElement("br"));
+            form.appendChild(input);
+            // Add a submit button
+        }
+        let submit = document.createElement("input");
+        submit.setAttribute("type", "submit");
+        submit.setAttribute("value", "Submit");
+        form.appendChild(submit);
+    });
+</script>
+
+</html>
